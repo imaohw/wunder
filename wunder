@@ -1,0 +1,22 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use utf8;
+
+use JSON;
+use LWP::UserAgent;
+
+my $api_key = "";
+my $url = "http://api.wunderground.com/api/$api_key/conditions/q/autoip.json";
+
+
+my $res = LWP::UserAgent->new()->get($url);
+unless($res->header('Client-Warning') && $res->header('Client-Warning') eq 'Internal response') {
+    my $data = decode_json($res->content);
+
+    if($data->{current_observation}) {
+        print "$data->{current_observation}->{temp_c}°C - $data->{current_observation}->{weather}\n";
+    }
+}
+
